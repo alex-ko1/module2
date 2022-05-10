@@ -1,0 +1,24 @@
+guestbook.content:
+  path: '/guestbook/feedback'
+  defaults:
+    _controller: '\Drupal\guestbook\Controller\guestbookController::content'
+    #_form: '\Drupal\guestbook\Form\guestbookForm'
+    _title: 'Hello! You can leave your feedback right here!'
+  requirements:
+    _permission: 'access content'
+
+delete.content:
+  path: '/guestbook/feedback/{id}/delete'
+  defaults:
+    _form: '\Drupal\guestbook\Form\guestbookDelete'
+  requirements:
+    _role: 'administrator'
+    _permission: 'administrator'
+
+edit.content:
+  path: '/guestbook/feedback/{id}/edit'
+  defaults:
+    _form: '\Drupal\guestbook\Form\guestbookEdit'
+  requirements:
+    _role: 'administrator'
+    _permission: 'administrator'

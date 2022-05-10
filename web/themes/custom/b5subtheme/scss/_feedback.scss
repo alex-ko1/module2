@@ -1,0 +1,55 @@
+div.feedback{
+    .odd, .even{
+        display: flex;
+        gap: 20px;
+        border: 2px solid #ccc;
+        border-radius: 90px;
+        padding: 20px 30px;
+        width: 80%;
+        margin-bottom: 10px;
+        .user--data{
+            width: 90px;
+            text-align: center;
+            margin-right: 20px;
+            .user__avatar{
+                border-radius: 50%;
+                width: 90px;
+                height: 90px;
+                border: 2px solid #ccc;
+                overflow: hidden;
+                img{
+                    width: inherit;
+                }
+            }
+            .user__name{
+                font-size: 1.2em;
+            }
+            .timestamp{
+                font-weight: 200;
+                font-size: 0.9em;
+                font-style: italic;
+            }
+        }
+        .feedback--user{
+            width: 100%;
+            width: -moz-available;          
+            width: -webkit-fill-available;
+            position: relative;
+            .feedback__image{
+                width: 260px;
+            }  
+            .contact{
+                text-align: right;
+                font-weight: 300;
+                font-style: italic;
+                font-size: 0.9em;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
+        }
+    }
+    .odd{
+        margin-left: auto;
+    }
+}

@@ -1,0 +1,9 @@
+global-styling:
+  css:
+    theme:
+      css/style.css: {}
+
+guestbook-page:
+  css:
+    theme:
+      css/guestbook.css: {}

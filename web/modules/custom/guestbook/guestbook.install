@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Install, create tables to store reviews.
+ */
+
+use Drupal\file\Entity\File;
+
+/**
+ * Implements hook_schema().
+ */
+
+function guestbook_schema(): array{
+    $schema['guestbook'] = [
+        'description'=>'The table of contestants',
+        'fields' => [
+            'id' => [
+              'description' => 'Primary key',
+              'type' => 'serial',
+              'not null' => TRUE,
+              'unsigned' => TRUE,
+            ],
+            'name' => [
+                'description' => 'User name',
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+            ],
+            'phone' => [
+              'description' => 'User phone number',
+              'type' => 'varchar',
+              'length' => 15,
+              'not null' => TRUE,
+            ],
+            'email' => [
+                'description' => 'User email',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ],
+            'comment' => [
+              'description' => 'Feedback',
+              'type' => 'text',
+              'not null' => TRUE,
+            ],
+            'image' => [
+              'description' => 'Images from the feedback',
+              'type' => 'varchar',
+              'length' => 255,
+              'default' => true,
+            ],
+            'avatar' => [
+              'description' => 'User avatar',
+              'type' => 'varchar',
+              'length' => 255,
+              'default' => true,
+            ],
+            'timestamp' => [
+              'description' => 'Date create',
+              'type' => 'varchar',
+              'length' => 20,
+              'not null' => TRUE,
+              'default' => 0,
+              ],
+            ],
+        'primary key' => ['id'],
+    ];
+    return $schema;
+}
+function alex_uninstall($is_syncing) {
+  $database = Drupal::database();
+  $result = $database->select('guestbook', 'g')
+    ->fields('g', ['image'])
+    ->execute();
+  foreach ($result as $row) {
+    if($row->image){
+      File::load($row->image)->delete();
+    }
+  }
+  \Drupal::state()->delete('guestbook.guestbook');
+}
+

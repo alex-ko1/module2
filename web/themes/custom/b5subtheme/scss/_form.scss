@@ -1,0 +1,31 @@
+.js-form-item-image.form-item-image,
+.js-form-item-avatar.form-item-avatar{
+    max-width: 366.5px;
+    .file.file--image{
+        max-width: 236px;
+    }
+    .messages.messages--error.file-upload-js-error{
+        margin-bottom: 3px;
+    }
+}
+.js-form-item-image.form-item-image,
+.js-form-item-avatar.form-item-avatar,
+[name="user_name"],
+[name="email"],
+[name="phone"],
+textarea[name="feedback"]{
+    width: max-content;
+}
+#edit-submit.js-form-submit.form-submit.btn.btn-primary{
+    padding: 6px 18px;
+    font-size: 1.1em;
+}
+
+#navbarSupportedContent{
+    align-items: baseline;
+    #block-b5subtheme-account-menu{
+        ul.nav.navbar-nav{
+            justify-content: flex-end;
+        }
+    }
+}

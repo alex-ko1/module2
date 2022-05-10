@@ -1,0 +1,54 @@
+{{ attach_library('b5subtheme/guestbook-page') }}
+{{ form }}
+{#{{ list }}#}
+
+{#{% for i in list %}
+  <p class="{{ cycle(['even', 'odd'], loop.index0) }}">{{ i.name }}</p>
+{% endfor %}#}
+<div class="feedback">
+  {% for i in list %}
+    <div class="{{ cycle(['odd', 'even'], loop.index0) }}">
+      <div class="user--data">
+        <div class="user__avatar">
+        {% if i.avatar %}
+          <img src="{{ i.avatar }}" alt="{{ i.name }}" title="{{ i.name }}">
+        {% else %}
+          <img src="/modules/custom/guestbook/img/default-avatar.jpeg" alt="{{ i.name }}" title="{{ i.name }}">
+        {% endif %}
+        </div>
+        <div class=" user__name ">{{ i.name }}</div>
+        <div class=" timestamp ">{{ i.timestamp }}</div>
+      </div>
+      <div class="feedback--user">
+        <p class=" feedback__comment ">{{ i.comment }}</p>
+        {% if i.image %}
+          <div class=" feedback__image " >
+            <a href="{{ i.image }}" target="_blank"><img src="{{ i.image }}" alt="{{ 'Feedback photo' }}"></a>
+          </div>
+        {% endif %}
+        <div class="contact">
+          <div class=" contact__phone ">{{ i.phone }}</div>
+          <div class=" contact__email ">{{ i.email }}</div>
+        </div>
+      </div>
+      {% if 'administrator' in user.getroles %}
+        <div class="admin--links">
+          <div class="option-links">
+{#            <a href="{{ path('guest_delete', {'id': i.id}) }}"  type="button" class="btn btn-outline-danger use-ajax delete"#}
+{#                data-dialog-options="{&quot;width&quot;:400}" data-dialog-type="modal"> Delete </a>#}
+            {{ links }}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{#<div>
+  {% for i in 1..10 %}
+    <div class="{{ cycle(['even', 'odd'], i) }}">
+      <!-- some HTML here -->
+      HELLO WoRLD!
+    </div>
+  {% endfor %}
+</div>#}

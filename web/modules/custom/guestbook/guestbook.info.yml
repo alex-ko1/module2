@@ -1,0 +1,5 @@
+name: guestbook
+description: In this module users can leave feedback, comments, impressions and suggestions
+core_version_requirement: ^8 || ^9
+type: module
+package: Guestbook
