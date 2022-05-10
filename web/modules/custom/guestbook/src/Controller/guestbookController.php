@@ -85,48 +85,7 @@ class guestbookController {
       ];
       $data[] = $links;
     }
-    /* $data = [];
-    foreach ($result as $row) {
-      $file = File::load($row->image);
-      $uri = $file->getFileUri();
-      $userImage = [
-        '#theme' => 'image',
-        '#uri' => $uri,
-        '#alt' => 'Cat',
-        '#width' => 125,
-        '#attributes' => [
-          'target' => ['_blank']
-        ],
-      ];
-      $file2 = File::load($row->avatar);
-      $uri2 = $file2->getFileUri();
-      $userAvatar = [
-        '#theme' => 'image',
-        '#uri' => $uri2,
-        '#alt' => 'Cat',
-        '#width' => 50,
-        '#attributes' => [
-          'target' => ['_blank']
-        ],
-      ];
-      $data[] = [
-        'avatar' => [
-          'data' => $userAvatar,
-        ],
-        'name' => $row->name,
-        'timestamp' => $row->timestamp,
-        'comment' => $row->comment,
-        'image' => [
-          'data' => $userImage,
-        ],
-        'email' => $row->email,
-        'phone' => $row->phone,
-      ];
-    }
-    $build[] = [
-      '#type' => 'table',
-      '#rows' => $data,
-    ];*/
+
     return [
       '#theme' => 'guestbook-theme',
       '#form' => $form,
