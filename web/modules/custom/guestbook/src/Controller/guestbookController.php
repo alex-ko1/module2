@@ -48,49 +48,10 @@ class guestbookController {
       ];
       $result=$review;
     }
-    $data = [];
-    if (in_array($admin, $roles)) {
-      $url = Url::fromRoute('delete.content', ['id' => $row->id]);
-      $url2 = Url::fromRoute('edit.content', ['id' => $row->id]);
-      $delete_link = [
-        '#title' => 'Delete',
-        '#type' => 'link',
-        '#url' => $url,
-        '#attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-        ],
-        '#attached' => [
-          'library' => ['core/drupal.dialog.ajax'],
-        ],
-      ];
-      $edit_link = [
-        '#title' => 'Edit',
-        '#type' => 'link',
-        '#url' => $url2,
-        '#attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-        ],
-        '#attached' => [
-          'library' => ['core/drupal.dialog.ajax'],
-        ],
-      ];
-      $links['link'] = [
-        'data' => [
-          "#theme" => 'operations',
-          'delete' => $delete_link,
-          'edit' => $edit_link,
-        ],
-      ];
-      $data[] = $links;
-    }
-
     return [
       '#theme' => 'guestbook-theme',
       '#form' => $form,
       '#list' => $result,
-      '#links' => $data,
     ];
   }
 }
