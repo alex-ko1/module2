@@ -4,7 +4,6 @@ namespace Drupal\guestbook\Form;
 
 use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Entity\File;
@@ -12,12 +11,10 @@ use Drupal\file\Entity\File;
 class guestbookForm extends FormBase
 {
 
-  public function getFormId()
-  {
+  public function getFormId(): string {
     return 'guestbook_form';
   }
-  public function buildForm(array $form, FormStateInterface $form_state)
-  {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $form['user_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Your name:'),
@@ -93,6 +90,10 @@ class guestbookForm extends FormBase
     }
   }
 
+  /**
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Exception
+   */
   public function submitForm(array &$form, FormStateInterface $form_state)
   {
     //If the image is uploaded, save it in the database
@@ -125,8 +126,7 @@ class guestbookForm extends FormBase
       ])
       ->execute();
   }
-  public function setMessage(array $form, FormStateInterface $form_state)
-  {
+  public function setMessage(array $form, FormStateInterface $form_state): AjaxResponse {
     $user_name = $form_state->getValue('user_name');
     $response = new AjaxResponse();
     if ($form_state->hasAnyErrors()) {

@@ -17,9 +17,6 @@ class guestbookController {
  * Display simple page.
  */
   public function content() {
-    $current_user = \Drupal::currentUser();
-    $roles = $current_user->getRoles();
-    $admin = "administrator";
     $form = \Drupal::formBuilder()
       ->getForm('Drupal\guestbook\Form\guestbookForm');
     $query = \Drupal::database();

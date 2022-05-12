@@ -14,24 +14,21 @@ use Drupal\file\Entity\File;
 class guestbookEdit extends FormBase
 {
 
-  /**
-   * @var mixed|null
-   */
-  private mixed $id;
+  protected $id;
 
-  public function getFormId() {
+  public function getFormId(): string {
     return "Guestbook_Edit";
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL): array {
     $this->id = $id;
     $query = \Drupal::database();
     $data = $query
       ->select('guestbook', 'g')
       ->condition('id', $id, '=')
-      ->fields('g', ['name', 'email', 'image', 'id'])
+      ->fields('g', ['name', 'email','phone','comment','avatar', 'image', 'id'])
       ->execute()->fetchAll();
-    $form['cat_name'] = [
+    $form['user_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Your name:'),
       '#default_value' => $data[0]->name,
@@ -42,6 +39,30 @@ class guestbookEdit extends FormBase
       '#type' => 'email',
       '#required' => TRUE,
       '#default_value' => $data[0]->email,
+    ];
+    $form['phone'] = [
+      '#title' => 'Your phone:',
+      '#type' => 'tel',
+      '#required' => true,
+      '#placeholder' => $this->t('+380000000000'),
+      '#default_value' => '+380',
+    ];
+    $form['feedback'] = [
+      '#title' => 'Write your feedback:',
+      '#type' => 'textarea',
+      '#required' => true,
+    ];
+    $form['avatar'] =[
+      '#title' => 'Add avatar:',
+      '#type' => 'managed_file',
+      '#name' => 'avatar',
+      '#description' => $this->t('format: jpg, jpeg, png <br> max-size: 2 MB'),
+      '#upload_validators' => [
+        'file_validate_is_image' => array(),
+        'file_validate_extensions' => array('jpg jpeg png'),
+        'file_validate_size' => array(2097152)
+      ],
+      '#upload_location' => 'public://files',
     ];
     $form['image'] = [
       '#title' => 'Image',
@@ -59,7 +80,7 @@ class guestbookEdit extends FormBase
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Edit Cat'),
+      '#value' => $this->t('Edit review'),
       '#button_type' => 'primary',
       '#ajax' => [
         'callback' => '::setMessage',
@@ -79,19 +100,30 @@ class guestbookEdit extends FormBase
     }
   }
 
+  /**
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function submitForm(array &$form, FormStateInterface $form_state): Url {
     // TODO: Implement submitForm() method.
     $image = $form_state->getValue('image');
     $file = File::load($image[0]);
     $file->setPermanent();
     $file->save();
+    $avatar = $form_state->getValue('avatar');
+    $file2 = File::load($avatar[0]);
+    $file2->setPermanent();
+    $file2->save();
     $query = \Drupal::database();
     $query->update('guestbook')
       ->condition('id', $this->id)
       ->fields([
         'name' => $form_state->getValue('user_name'),
         'email' => $form_state->getValue('email'),
+        'phone' => $form_state->getValue('phone'),
+        'comment' => $form_state->getValue('feedback'),
+        'avatar' => $avatar[0],
         'image' => $image[0],
+
       ])
       ->execute();
     $form_state->setRedirect('guestbook.content');
@@ -106,7 +138,7 @@ class guestbookEdit extends FormBase
       }
     }
     else {
-      $response->addCommand(new MessageCommand('You edit ' . $user_name .'\' review ! '));
+      $response->addCommand(new MessageCommand('You edit ' . $user_name .'\'s review ! '));
     }
     \Drupal::messenger()->deleteAll();
     return $response;

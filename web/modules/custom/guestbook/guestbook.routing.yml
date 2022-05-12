@@ -7,3 +7,19 @@ guestbook.content:
   requirements:
     _permission: 'access content'
 
+delete.content:
+  path: '/guestbook/feedback/{id}/delete'
+  defaults:
+    _form: '\Drupal\guestbook\Form\guestbookDelete'
+  requirements:
+    _permission: 'administrator'
+    _roles: 'administrator'
+
+edit.content:
+  path: '/guestbook/feedback/{id}/edit'
+  defaults:
+    _form: '\Drupal\guestbook\Form\guestbookEdit'
+    _title: 'Edit review'
+  requirements:
+    _permission: 'administrator'
+    _roles: 'administrator'

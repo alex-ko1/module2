@@ -1,5 +1,7 @@
 {{ attach_library('b5subtheme/guestbook-page') }}
 {{ form }}
+{#{{ list }}#}
+
 <div class="feedback">
   {% for i in list %}
     <div class="{{ cycle(['odd', 'even'], loop.index0) }}">
@@ -28,9 +30,14 @@
       </div>
       {% if 'administrator' in user.getroles %}
         <div class="admin--links">
-          <div class="option-links">
-
+          <div class="links__delete">
+            <a href="{{ path('delete.content', {'id': i.id}) }}"  type="button" class="btn btn-outline-danger use-ajax delete"
+                data-dialog-options="{&quot;width&quot;:400}" data-dialog-type="modal"> Delete </a>
             {{ links }}
+          </div>
+          <div class="links__edit" style="margin-top: 10px;">
+            <a href="{{ path('edit.content', {'id': i.id}) }}"  type="button" class="btn btn-outline-success use-ajax edit"
+               data-dialog-options="{&quot;width&quot;:&quot;max-content&quot;}" data-dialog-type="modal"> Edit </a>
           </div>
         </div>
       {% endif %}

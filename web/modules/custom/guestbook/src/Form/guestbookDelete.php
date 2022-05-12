@@ -1,30 +1,22 @@
 <?php
 
-namespace Drupal\gestbook\Form;
+namespace Drupal\guestbook\Form;
 
 use Drupal\file\Entity\File;
 use Drupal\Core\Url;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class guestbookDelete extends ConfirmFormBase {
 
 
-  /**
-   * @var mixed|null
-   */
-  private mixed $id;
+  protected $id;
 
   public function getFormId(): string {
     return 'delete_form';
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL): array {
+  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL) {
     $this->id = $id;
     return parent::buildForm($form, $form_state);
   }
@@ -53,7 +45,7 @@ class guestbookDelete extends ConfirmFormBase {
       ->fields('g', ['id', 'name'])
       ->condition('id', $this->id)
       ->execute()->fetch();
-    return $this->t('Delete feedback users- @user_name, with id- %id ?', ['%id' => $result-> id, '@user_name' => $result-> name]);
+    return $this->t('Delete feedback users - @user_name, with id - %id?', ['%id' => $result-> id, '@user_name' => $result-> name]);
   }
 
   public function getCancelUrl(): Url {
