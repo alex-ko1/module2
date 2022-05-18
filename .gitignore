@@ -27,6 +27,8 @@
 web/themes/**/node_modules/
 
 /.docksal/
+/web/modules/custom/entity
+/web/modules/custom/.idea
 
 # OS generated files #
 ######################

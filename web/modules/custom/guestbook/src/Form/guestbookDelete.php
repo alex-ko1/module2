@@ -2,6 +2,7 @@
 
 namespace Drupal\guestbook\Form;
 
+use Drupal;
 use Drupal\file\Entity\File;
 use Drupal\Core\Url;
 use Drupal\Core\Form\ConfirmFormBase;
@@ -16,7 +17,7 @@ class guestbookDelete extends ConfirmFormBase {
     return 'delete_form';
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $id = NULL): array {
     $this->id = $id;
     return parent::buildForm($form, $form_state);
   }
@@ -25,22 +26,33 @@ class guestbookDelete extends ConfirmFormBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $query = \Drupal::database();
+    /**
+     * Delete image and avatar field from the database.
+     */
+    $query = Drupal::database();
     $result = $query->select('guestbook', 'g')
-      ->fields('g', ['image', 'avatar'])
+      ->fields('g', ['image', 'avatar', 'id' ])
       ->condition('id', $this->id)
       ->execute()->fetch();
+    if ($result->image){
     File::load($result->image)->delete();
+    }
+    if ($result->avatar){
     File::load($result->avatar)->delete();
+    }
     $query->delete('guestbook')
       ->condition('id', $this->id)
       ->execute();
-    \Drupal::messenger()->addStatus('Successfully deleted.');
+    Drupal::messenger()->addStatus('Successfully deleted.');
     $form_state->setRedirect('guestbook.content');
   }
 
-  public function getQuestion() {
-    $database = \Drupal::database();
+  /**
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   * Question about confirming delete this feedback.
+   */
+  public function getQuestion(): \Drupal\Core\StringTranslation\TranslatableMarkup {
+    $database = Drupal::database();
     $result = $database->select('guestbook', 'g')
       ->fields('g', ['id', 'name'])
       ->condition('id', $this->id)

@@ -7,19 +7,20 @@ namespace Drupal\guestbook\Controller;
 /*
  * Provides route for custom module.
  */
+
+use Drupal;
 use Drupal\file\Entity\File;
-use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Url;
+
 
 class guestbookController {
 
   /*
- * Display simple page.
+ * Display simple page with form for leave review and this reviews.
  */
-  public function content() {
-    $form = \Drupal::formBuilder()
+  public function content(): array {
+    $form = Drupal::formBuilder()
       ->getForm('Drupal\guestbook\Form\guestbookForm');
-    $query = \Drupal::database();
+    $query = Drupal::database();
     $result = $query->select('guestbook', 'g')
       ->fields('g', ['name', 'phone', 'email', 'comment', 'image', 'avatar', 'timestamp', 'id'])
       ->orderBy('id', 'DESC')

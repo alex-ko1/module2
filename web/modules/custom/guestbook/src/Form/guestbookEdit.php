@@ -2,10 +2,9 @@
 
 namespace Drupal\guestbook\Form;
 
+use Drupal;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\MessageCommand;
-use Drupal\Core\Ajax\HtmlCommand;
-use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -22,12 +21,20 @@ class guestbookEdit extends FormBase
 
   public function buildForm(array $form, FormStateInterface $form_state, $id = NULL): array {
     $this->id = $id;
-    $query = \Drupal::database();
+    $query = Drupal::database();
     $data = $query
       ->select('guestbook', 'g')
-      ->condition('id', $id, '=')
+      ->condition('id', $id)
       ->fields('g', ['name', 'email','phone','comment','avatar', 'image', 'id'])
       ->execute()->fetchAll();
+    $image=[];
+    $avatar=[];
+    if ($data[0]->image){
+      $image=[$data[0]->image];
+    }
+    if ($data[0]->avatar){
+      $avatar=[$data[0]->avatar];
+    }
     $form['user_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Your name:'),
@@ -45,18 +52,21 @@ class guestbookEdit extends FormBase
       '#type' => 'tel',
       '#required' => true,
       '#placeholder' => $this->t('+380000000000'),
-      '#default_value' => '+380',
+      '#default_value' => $data[0]->phone,
+
     ];
     $form['feedback'] = [
       '#title' => 'Write your feedback:',
       '#type' => 'textarea',
       '#required' => true,
+      '#default_value' => $data[0]->comment,
     ];
     $form['avatar'] =[
       '#title' => 'Add avatar:',
       '#type' => 'managed_file',
       '#name' => 'avatar',
-      '#description' => $this->t('format: jpg, jpeg, png <br> max-size: 2 MB'),
+      '#description' => $this->t('Format: jpg, jpeg, png; Max-size: 2 MB'),
+      '#default_value' => $avatar,
       '#upload_validators' => [
         'file_validate_is_image' => array(),
         'file_validate_extensions' => array('jpg jpeg png'),
@@ -65,16 +75,14 @@ class guestbookEdit extends FormBase
       '#upload_location' => 'public://files',
     ];
     $form['image'] = [
-      '#title' => 'Image',
+      '#title' => 'Image:',
       '#type' => 'managed_file',
-      '#multiple' => FALSE,
-      '#description' => t('format: jpg, jpeg, png <br> max-size: 2MB'),
-      '#default_value' => [$data[0]->image],
-      '#required' => TRUE,
-      '#upload_location' => 'public://images/',
+      '#description' => t('Format: jpg, jpeg, png; Max-size: 5MB'),
+      '#default_value' => $image,
+      '#upload_location' => 'public://files',
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
-        'file_validate_size' => [2097152],
+        'file_validate_size' => [5242880],
       ],
     ];
     $form['actions']['#type'] = 'actions';
@@ -88,8 +96,15 @@ class guestbookEdit extends FormBase
     ];
     return $form;
   }
+
+  /**
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * Validate the changed username and email.
+   */
   public function validateForm(array &$form, FormStateInterface $form_state)
   {
+
     if (strlen($form_state->getValue('user_name')) < 2) {
       $form_state->setErrorByName('user_name', $this->t('Please enter a longer name.'));
     } elseif (strlen($form_state->getValue('user_name')) >100) {
@@ -102,6 +117,7 @@ class guestbookEdit extends FormBase
 
   /**
    * @throws \Drupal\Core\Entity\EntityStorageException
+   * Submit form with changed user feedback.
    */
   public function submitForm(array &$form, FormStateInterface $form_state): Url {
     // TODO: Implement submitForm() method.
@@ -113,7 +129,7 @@ class guestbookEdit extends FormBase
     $file2 = File::load($avatar[0]);
     $file2->setPermanent();
     $file2->save();
-    $query = \Drupal::database();
+    $query = Drupal::database();
     $query->update('guestbook')
       ->condition('id', $this->id)
       ->fields([
@@ -129,6 +145,14 @@ class guestbookEdit extends FormBase
     $form_state->setRedirect('guestbook.content');
     return new Url('guestbook.content');
   }
+
+  /**
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   * Display message with successfully left feedback or display any error when filling out the form
+   */
   public function setMessage(array $form, FormStateInterface $form_state): AjaxResponse {
     $user_name = $form_state->getValue('user_name');
     $response = new AjaxResponse();
@@ -140,7 +164,7 @@ class guestbookEdit extends FormBase
     else {
       $response->addCommand(new MessageCommand('You edit ' . $user_name .'\'s review ! '));
     }
-    \Drupal::messenger()->deleteAll();
+    Drupal::messenger()->deleteAll();
     return $response;
   }
 }

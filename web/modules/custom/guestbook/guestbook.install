@@ -48,13 +48,13 @@ function guestbook_schema(): array{
               'description' => 'Images from the feedback',
               'type' => 'varchar',
               'length' => 255,
-              'default' => true,
+              'default' => 0,
             ],
             'avatar' => [
               'description' => 'User avatar',
               'type' => 'varchar',
               'length' => 255,
-              'default' => true,
+              'default' => 0,
             ],
             'timestamp' => [
               'description' => 'Date create',
